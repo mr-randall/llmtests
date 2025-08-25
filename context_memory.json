@@ -1,0 +1,16 @@
+{
+    "setups": [
+        {
+            "prior_conversations": [
+                []
+            ]
+        }
+    ], 
+    "tests" : [
+        {
+            "summary": "Simple context memory",
+            "messages": [],
+            "expected_response": []
+        }
+    ]
+}

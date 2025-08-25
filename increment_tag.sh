@@ -3,7 +3,7 @@
 #Script courtesy of https://stackoverflow.com/a/27332476
 
 #get highest tag number
-VERSION=`git describe --abbrev=0 --tags` || VERSION="v0.0.0"
+VERSION="$(git describe --abbrev=0 --tags || echo "v0.0.0")"
 
 #replace . with space so can split into an array
 VERSION_BITS=(${VERSION//./ })
