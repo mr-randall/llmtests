@@ -57,3 +57,14 @@ The following example explains most of the functionality of the template.
 }
 ```
 
+```python
+# Here is a simple inefficient example
+import llmtests
+import ollama
+
+def chatfn(messages):
+    resp = ollama.chat(model='deepseek-r1:8b', messages=messages)
+    return resp["message"]
+
+print(llmtests.test_all(chatfn))
+```

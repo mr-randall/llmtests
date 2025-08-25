@@ -3,7 +3,8 @@ from os import walk, path
 from re import sub, DOTALL
 
 class SETTINGS:
-    tests_folder = "./llmtests/test_files"
+    dir_path = path.dirname(path.realpath(__file__))
+    tests_folder = dir_path+"/test_files"
     case_sensitive = False
 
 def get_json_files_in_folder(folder_path, recursive=False):
