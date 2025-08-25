@@ -1,0 +1,35 @@
+[project]
+name = "llmtests"
+dynamic = ["version"]
+authors = [
+  { name="Chris Randall", email="" },
+]
+description = "LLM Tests"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/mr-randall/llmtests"
+Issues = "https://github.com/mr-randall/llmtests/issues"
+Source = "https://github.com/mr-randall/llmtests"
+
+[build-system]
+requires = ["hatchling >= 1.26", "versioningit"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "versioningit"
+
+[tool.versioningit]
+default-version = "0.0.0-unknown"
+
+[tool.versioningit.format]
+distance = "{next_version}.dev{distance}+{vcs}{rev}"
+dirty = "{version}+dirty"
+distance-dirty = "{next_version}.dev{distance}+{vcs}{rev}.dirty"

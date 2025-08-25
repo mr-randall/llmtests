@@ -1,0 +1,77 @@
+{
+    "summary": "Short context simple connection conversations",
+    "setups": [
+        {
+            "summary": "Chris just bought a trampoline.",
+            "prior_conversations": [
+                [{
+                    "role": "user",
+                    "content": "Chris just bought a trampoline."
+                }]
+            ]
+        },
+        {
+            "summary": "Fred heard Chris bought a trampoline.",
+            "prior_conversations": [
+                [{
+                    "role": "user",
+                    "content": "OMG Fred! Did you hear?"
+                },
+                {
+                    "role": "assistant",
+                    "content": "Did I hear what?"
+                },
+                {
+                    "role": "user",
+                    "content": "About the trampoline! Chris just bought one"
+                }]
+            ]
+        },{
+            "summary": "Uncle Chris bought a trampoline.",
+            "prior_conversations": [
+                [{
+                    "role": "user",
+                    "content": "My uncles name is Chris. He just bought a trampoline."
+                }]
+            ]
+        },{
+            "summary": "Chris bought a trampoline, not John.",
+            "prior_conversations": [
+                [{
+                    "role": "user",
+                    "content": "John just bought a trampoline."
+                }],
+                
+                [{
+                    "role": "user",
+                    "content": "Do you remember who bought a trampoline"
+                },{
+                    "role": "assistant",
+                    "content": "Yes, it was John"
+                },
+                {
+                    "role": "user",
+                    "content": "Ah, my bad, it was actually Chris"
+                }]
+            ]
+        }
+    ], 
+    "tests" : [
+        {
+            "summary": "Who bought a trampoline?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with one word. Who bought a trampoline?"
+                }],
+            "expected_response": "Chris"
+        },
+        {
+            "summary": "What did Chris just buy?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with one word. What did Chris just buy?"
+                }],
+            "expected_response": "trampoline"
+        }
+    ]
+}
