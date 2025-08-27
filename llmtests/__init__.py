@@ -90,3 +90,32 @@ def test_all_in_folder(chat_fn, folder_path):
 def test_all(chat_fn):
     return test_all_in_folder(chat_fn, SETTINGS.tests_folder)
 
+def test_results_as_text_report(results_array):
+    pass_count = 0
+    test_count = 0
+    
+    file_results_array = []
+    
+    # Ensure the result is always at the file level
+    if 'results' in results_array[0]:
+        if 'results' not in results_array[0]['results'][0]:
+            file_results_array.append({'results': results_array}) #Missing 2nd level results
+        else:
+            file_results_array = results_array #Already formatted correctly
+    else:
+        file_results_array.append({'results': [{'results': results_array}]}) #Missing first level results
+        
+    report_txt = ''
+    
+    for file_result in file_results_array:
+        for setup_results in file_result["results"]:
+            for test_result in setup_results["results"]:
+                if not test_result['pass']:
+                    report_txt += json.dumps(test_result)+'\n'
+
+                test_count += 1
+                if test_result['pass']:
+                    pass_count += 1
+                    
+    return {'pass_count': pass_count, 'test_count': test_count, 'report': report_txt}
+

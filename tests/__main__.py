@@ -25,18 +25,9 @@ class TestFramework():
         
     def test_all_with_fn(self, func):
         file_results = llmtests.test_all(func)
-        pass_count = 0
-        test_count = 0
-        
-        for file_result in file_results:
-            for setup_results in file_result["results"]:
-                for test_result in setup_results["results"]:
-                    print(test_result)
-                    test_count += 1
-                    if test_result['pass']:
-                        pass_count += 1
+        report_stat = llmtests.test_results_as_text_report(file_results)
                         
-        return {"pass_count": pass_count, "test_count": test_count}
+        return {"pass_count": report_stat['pass_count'], "test_count": report_stat['test_count']}
 
 
 class LLMTestMethods(unittest.TestCase):
