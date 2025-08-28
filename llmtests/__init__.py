@@ -24,7 +24,7 @@ def tidy_llm_response(llm_resp):
     return no_think_response
     
 
-def test_single_setup(chat_fn, setup_conf, tests_conf):
+def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
     
     test_results = []
     
@@ -34,7 +34,7 @@ def test_single_setup(chat_fn, setup_conf, tests_conf):
     
     #Provide the LLM with the prior conversation
     for prior_conversation in setup_conf["prior_conversations"]:
-        chat_fn(prior_conversation)        
+        chat_fn(prior_conversation)
         
     #New context and perform tests
     for test in tests_conf:
@@ -54,19 +54,22 @@ def test_single_setup(chat_fn, setup_conf, tests_conf):
             'expected': test["expected_response"],
             'pass': test_result
             })
+    
+    if reset_fn:
+        reset_fn()
                 
     return {'summary':setup_summary, 'results': test_results}
         
 
 
-def test_from_json(chat_fn, test_json):
+def test_from_json(chat_fn, reset_fn, test_json):
     setups = test_json["setups"]
     tests = test_json["tests"]
     
     results = []
     
     for setup in setups:
-        results.append(test_single_setup(chat_fn, setup, tests))
+        results.append(test_single_setup(chat_fn, reset_fn, setup, tests))
         
     return results
 
@@ -75,20 +78,20 @@ def load_from_file(filename):
     with open(filename, 'r') as f:
         return json.load(f)
 
-def test_from_file(chat_fn, filename):
-    return {"summary": filename, "results": test_from_json(chat_fn, load_from_file(filename))}
+def test_from_file(chat_fn, reset_fn, filename):
+    return {"summary": filename, "results": test_from_json(chat_fn, reset_fn, load_from_file(filename))}
     
     
-def test_all_in_folder(chat_fn, folder_path):
+def test_all_in_folder(chat_fn, reset_fn, folder_path):
     test_files = get_json_files_in_folder(folder_path)
     results = []
     for filename in test_files:
-        results.append(test_from_file(chat_fn, filename))
+        results.append(test_from_file(chat_fn, reset_fn, filename))
     return results
 
 
-def test_all(chat_fn):
-    return test_all_in_folder(chat_fn, SETTINGS.tests_folder)
+def test_all(chat_fn, reset_fn):
+    return test_all_in_folder(chat_fn, reset_fn, SETTINGS.tests_folder)
 
 def test_results_as_text_report(results_array):
     pass_count = 0
@@ -105,17 +108,19 @@ def test_results_as_text_report(results_array):
     else:
         file_results_array.append({'results': [{'results': results_array}]}) #Missing first level results
         
-    report_txt = ''
+    failed_report_txt = ''
     
     for file_result in file_results_array:
         for setup_results in file_result["results"]:
             for test_result in setup_results["results"]:
                 if not test_result['pass']:
-                    report_txt += json.dumps(test_result)+'\n'
+                    failed_report_txt += json.dumps(test_result)+'\n'
 
                 test_count += 1
                 if test_result['pass']:
                     pass_count += 1
                     
-    return {'pass_count': pass_count, 'test_count': test_count, 'report': report_txt}
+    if failed_report_txt == '':
+        failed_report_txt = "No failed tests"
+    return {'pass_count': pass_count, 'test_count': test_count, 'failed_report': failed_report_txt}
 

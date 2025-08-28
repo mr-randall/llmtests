@@ -24,7 +24,7 @@ class TestFramework():
         assert self.llm_response is not None, f"Expected response not found in {filenames[0]}"
         
     def test_all_with_fn(self, func):
-        file_results = llmtests.test_all(func)
+        file_results = llmtests.test_all(func, lambda:())
         report_stat = llmtests.test_results_as_text_report(file_results)
                         
         return {"pass_count": report_stat['pass_count'], "test_count": report_stat['test_count']}
