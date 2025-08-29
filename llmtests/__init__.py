@@ -36,6 +36,8 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
     for prior_conversation in setup_conf["prior_conversations"]:
         chat_fn(prior_conversation)
         
+    
+        
     #New context and perform tests
     for test in tests_conf:
         tidy_resp = tidy_llm_response(chat_fn(test["messages"]))
@@ -54,9 +56,11 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
             'expected': test["expected_response"],
             'pass': test_result
             })
+        if reset_fn:
+            reset_fn(context_reset=False, memory_reset=True)
     
     if reset_fn:
-        reset_fn()
+        reset_fn(context_reset=False, memory_reset=True)
                 
     return {'summary':setup_summary, 'results': test_results}
         
