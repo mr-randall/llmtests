@@ -73,7 +73,7 @@
             "summary": "Who bought a trampoline?",
             "messages": [{
                     "role": "system",
-                    "content": "Answer with one word. Who bought a trampoline?"
+                    "content": "Answer with one word, don't use punctuation. Who bought a trampoline?"
                 }],
             "expected_response": "Chris"
         },
@@ -81,7 +81,7 @@
             "summary": "What did Chris just buy?",
             "messages": [{
                     "role": "system",
-                    "content": "Answer with one word. What did Chris just buy?"
+                    "content": "Answer with one word, don't use punctuation. What did Chris just buy?"
                 }],
             "expected_response": "trampoline"
         },
@@ -89,7 +89,7 @@
             "summary": "What did John buy?",
             "messages": [{
                     "role": "system",
-                    "content": "Answer with one word. What did John just buy?"
+                    "content": "Answer with one word, don't use punctuation. What did John just buy?"
                 }],
             "expected_response": "fridge"
         }
