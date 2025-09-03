@@ -53,7 +53,7 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
             tidy_resp = tidy_resp.lower()
             test_result = (tidy_resp == test["expected_response"].lower())
         if not test_result and not SETTINGS.remove_fullstop:
-            tidy_resp = re.sub(r'((\.)$)', '', tidy_resp) 
+            tidy_resp = re.sub(r'\.$', '', tidy_resp) 
             test_result = (tidy_resp == test["expected_response"])
             
         test_results.append({
