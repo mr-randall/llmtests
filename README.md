@@ -66,5 +66,21 @@ def chatfn(messages):
     resp = ollama.chat(model='deepseek-r1:8b', messages=messages)
     return resp["message"]
 
-print(llmtests.test_all(chatfn))
+def resetMemory(context_reset, memory_reset):
+    if memory_reset:
+        # Reset Database. E.g. wipe everything
+        pass
+    if context_reset:
+        pass
+        # Reset context of current conversation
+
+results = llmtests.test_all(chatfn, resetMemory)
+report = llmtests.test_results_as_text_report(results)
+print("Score:",report["pass_count"],"/",report["test_count"])
+
+if report["failed_report"]:
+    print("Failed tests")
+    print(report["failed_report"])
+else:
+    print("No failed tests")
 ```
