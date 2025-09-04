@@ -2,11 +2,19 @@
     "summary": "Short context simple connection conversations",
     "setups": [
         {
-            "summary": "Chris just bought a trampoline.",
+            "summary": "Chris just bought a trampoline and John bought a fridge",
             "prior_conversations": [
                 [{
                     "role": "user",
-                    "content": "Chris just bought a trampoline."
+                    "content": "Chris just bought a trampoline and John bought a fridge."
+                },
+                {
+                    "role": "assistant",
+                    "content": "Wow, I'm so happy for them."
+                },
+                {
+                    "role": "user",
+                    "content": "Same, the fridge is a nice white colour."
                 }]
             ]
         },
@@ -24,6 +32,10 @@
                 {
                     "role": "user",
                     "content": "About the trampoline! Chris just bought one"
+                },
+                {
+                    "role": "assistant",
+                    "content": "That sounds like a lot of fun! Did you know John bought a fridge? It's less fun, but it's a nice white colour."
                 }]
             ]
         },{
@@ -31,7 +43,7 @@
             "prior_conversations": [
                 [{
                     "role": "user",
-                    "content": "My uncles name is Chris. He just bought a trampoline."
+                    "content": "My uncles name is Chris. He just bought a trampoline. Last week his son John bought a white fridge"
                 }]
             ]
         },{
@@ -51,7 +63,7 @@
                 },
                 {
                     "role": "user",
-                    "content": "Ah, my bad, it was actually Chris"
+                    "content": "Ah, my bad, it was actually Chris. John got a fridge, it's white."
                 }]
             ]
         }
@@ -72,6 +84,14 @@
                     "content": "Answer with one word **only**. What did Chris just buy?"
                 }],
             "expected_response": "trampoline"
+        },
+        {
+            "summary": "What did John buy?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with one word **only**. What did John just buy?"
+                }],
+            "expected_response": "fridge"
         }
     ]
 }

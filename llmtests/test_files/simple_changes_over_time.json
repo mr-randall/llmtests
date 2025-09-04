@@ -1,0 +1,101 @@
+{
+    "summary": "Short context object tracking conversations",
+    "setups": [
+        {
+            "summary": "Chris just bought a trampoline, then he sold it and then it was given away",
+            "prior_conversations": [
+                [{
+                    "role": "user",
+                    "content": "John's brother Chris just bought a new trampoline!"
+                }],
+                [{
+                    "role": "user",
+                    "content": "Did you hear that John just bought Chris' trampoline?"
+                }],
+                [{
+                    "role": "user",
+                    "content": "John got a dirt bike after he broke the trampoline and it went in the bin"
+                }],
+                [{
+                    "role": "user",
+                    "content": "John got a dirt bike after he broke the trampoline and it went in the bin"
+                }]
+            ]
+        },{
+            "summary": "John's motorbike crash",
+            "prior_conversations": [
+                [{
+                    "role": "user",
+                    "content": "Did you hear about what happened to John?"
+                },{
+                    "role": "assistant",
+                    "content": "No, what happened?"
+                },
+                {
+                    "role": "user",
+                    "content": "He crashed his motorbike on the weekend, the bike is okay, but he broke 2 ribs"
+                },{
+                    "role": "assistant",
+                    "content": "Oh dear, that's not good. He seems to make very risk decisions, especially given he broke his trampoline and had to bin it"
+                }],
+                [{
+                    "role": "user",
+                    "content": "Hey, Frank asked, do you know who John bought the trampoline from?"
+                },{
+                    "role": "assistant",
+                    "content": "Yes, he got it from Chris. Chris got it brand new from the shop."
+                }]
+            ]
+        }
+    ], 
+    "tests" : [
+        {
+            "summary": "Who originally bought trampoline?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with one word, don't use punctuation. Before John got a dirt bike he had a trampoline, who did he buy it from?"
+                }],
+            "expected_response": "Chris"
+        },
+        {
+            "summary": "Who did Chris sell his trampoline too?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with one word, don't use punctuation. Who did Chris sell his trampoline to?"
+                }],
+            "expected_response": "trampoline"
+        },
+        {
+            "summary": "Who owns a motorbike?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with one word, don't use punctuation. Who owns a motorbike?"
+                }],
+            "expected_response": "John"
+        },
+        {
+            "summary": "Does Chris still own the trampoline?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with yes or no **only**. Does Chris still own the trampoline?"
+                }],
+            "expected_response": "no"
+        },
+        {
+            "summary": "Does John still own the trampoline?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with yes or no **only**. Does John still own the trampoline?"
+                }],
+            "expected_response": "no"
+        },
+        {
+            "summary": "Is the trampoline broken?",
+            "messages": [{
+                    "role": "system",
+                    "content": "Answer with yes or no **only**. Is the trampoline broken?"
+                }],
+            "expected_response": "yes"
+        }
+    ]
+}

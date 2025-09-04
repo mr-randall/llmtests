@@ -1,11 +1,13 @@
 import json
 from os import walk, path
 from re import sub, DOTALL
+import re
 
 class SETTINGS:
     dir_path = path.dirname(path.realpath(__file__))
     tests_folder = dir_path+"/test_files"
     case_sensitive = False
+    remove_fullstop = True
 
 def get_json_files_in_folder(folder_path, recursive=False):
     test_file_paths = []
@@ -36,6 +38,8 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
     for prior_conversation in setup_conf["prior_conversations"]:
         chat_fn(prior_conversation)
         
+    
+        
     #New context and perform tests
     for test in tests_conf:
         tidy_resp = tidy_llm_response(chat_fn(test["messages"]))
@@ -45,8 +49,12 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
             test_summary=test['summary']
         
         test_result = (tidy_resp == test["expected_response"])
-        if not SETTINGS.case_sensitive:
-            test_result = (tidy_resp.lower() == test["expected_response"].lower())
+        if not test_result and not SETTINGS.case_sensitive:
+            tidy_resp = tidy_resp.lower()
+            test_result = (tidy_resp == test["expected_response"].lower())
+        if not test_result and SETTINGS.remove_fullstop:
+            tidy_resp = re.sub(r'\.$', '', tidy_resp) 
+            test_result = (tidy_resp == test["expected_response"])
             
         test_results.append({
             'summary': test_summary,
@@ -54,9 +62,11 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
             'expected': test["expected_response"],
             'pass': test_result
             })
+        if reset_fn:
+            reset_fn(context_reset=False, memory_reset=True)
     
     if reset_fn:
-        reset_fn()
+        reset_fn(context_reset=False, memory_reset=True)
                 
     return {'summary':setup_summary, 'results': test_results}
         

@@ -40,7 +40,7 @@ jobs:
   publish-to-pypi:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
-    if: startsWith(github.ref, 'refs/tags/') && github.ref == 'refs/heads/main'  # only publish to PyPI on main tag pushes
+    if: github.event.pull_request.merged == true
     needs:
     - build
     runs-on: ubuntu-latest
