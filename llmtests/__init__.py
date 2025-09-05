@@ -1,14 +1,15 @@
 import json
-from os import walk, path
-import os
+from os import walk, path, remove, makedirs
 from re import sub, DOTALL
-import re
+from glob import glob
 
 class SETTINGS:
     dir_path = path.dirname(path.realpath(__file__))
     tests_folder = dir_path+"/test_files"
     case_sensitive = False
     remove_fullstop = True
+    write_fully_passed_test_reports = True
+    clean_report_folder = True
 
 def get_json_files_in_folder(folder_path, recursive=False):
     test_file_paths = []
@@ -62,7 +63,7 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
             tidy_resp = tidy_resp.lower()
             test_result = (tidy_resp == test["expected_response"].lower())
         if not test_result and SETTINGS.remove_fullstop:
-            tidy_resp = re.sub(r'\.$', '', tidy_resp) 
+            tidy_resp = sub(r'\.$', '', tidy_resp) 
             test_result = (tidy_resp == test["expected_response"])
             
         test_results.append({
@@ -149,8 +150,12 @@ def test_results_as_html_report(results_array, folder_name):
     pass_count = 0
     test_count = 0
     
-    if not os.path.exists(folder_name):
-        os.makedirs(folder_name) 
+    if not path.exists(folder_name):
+        makedirs(folder_name)
+    else:
+        if SETTINGS.clean_report_folder:
+            for f in glob(path.join(folder_name,"test-*-*.html")):
+                remove(f)
     
     file_results_array = []
     
@@ -171,26 +176,33 @@ def test_results_as_html_report(results_array, folder_name):
     for file_result in file_results_array:
         test_file_number += 1
         test_setup_number = 0
+        pass_count = 0
         for setup_results in file_result["results"]:
             test_setup_number += 1
             test_result_number = 0
             
             file_name = f"test-{test_file_number}-{test_setup_number}.html"
+            file_content = ''
             
-            with open(path.join(folder_name, file_name), 'w') as file:
-                file.write(f"<h1>Setup {test_setup_number}</h1>")
-                file.write(f"<h2>Summary</h2> \"{setup_results['summary']}\"")
-                file.write(f"<h2>Results</h2>")
-                file.write(f"<table>")
-                file.write(f"<tr><th>#</th><th>Name</th><th>Expected</th><th>Result</th><th>Pass</th></tr>")
+            file_content += f"<h1>Setup {test_setup_number}</h1>"
+            file_content += f"<h2>Summary</h2>"
+            file_content += f"{setup_results['summary']}"
+            file_content += f"<h2>Results</h2>"
+            file_content += f"<table>"
+            file_content += f"<tr><th>#</th><th>Name</th><th>Expected</th><th>Result</th><th>Pass</th></tr>"
+            
+            for test_result in setup_results["results"]:
+                test_result_number += 1
+                pass_count += int(test_result['pass'])
+                file_content += f"<tr><td>{test_result_number}</td><td>{test_result['summary']}</td><td>{test_result['expected']}</td><td>{test_result['result']}</td><td>{test_result['pass']}</td></tr>"
                 
-                for test_result in setup_results["results"]:
-                    test_result_number += 1
-                    file.write(f"<tr><td>{test_result_number}</td><td>{test_result['summary']}</td><td>{test_result['expected']}</td><td>{test_result['result']}</td><td>{test_result['pass']}</td></tr>")
-                    
-                file.write(f"</table>")
-                file.write(f"<h2>Conversation</h2>")
-                file.write(f"<pre>{json.dumps(setup_results['conversation_log'], indent=4)}</pre>")
+            file_content += f"</table>"
+            file_content += f"<h2>Conversation</h2>"
+            file_content += f"<pre>{json.dumps(setup_results['conversation_log'], indent=4)}</pre>"
+            
+            if pass_count > 0 or SETTINGS.write_fully_passed_test_reports:
+                with open(path.join(folder_name, file_name), 'w') as file:
+                    file.write(file_content)
                     
     if failed_report_txt == '':
         failed_report_txt = "No failed tests"
