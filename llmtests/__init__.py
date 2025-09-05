@@ -187,27 +187,10 @@ def test_results_as_html_report(results_array, folder_name):
                 for test_result in setup_results["results"]:
                     test_result_number += 1
                     file.write(f"<tr><td>{test_result_number}</td><td>{test_result['summary']}</td><td>{test_result['expected']}</td><td>{test_result['result']}</td><td>{test_result['pass']}</td></tr>")
-                    #file.write(f"<h2>Test {test_result_number}: \"{test_result['summary']}\"</h2>\n")
-                    #file.write(f"<h3>Expect: \"{test_result['expected']}\"</h3>")
-                    #file.write(f"<h3>Result: \"{test_result['result']}\"</h3>")
-                    #file.write(f"<h3>Pass: \"{test_result['pass']}\"</h3>")
                     
                 file.write(f"</table>")
-                
-                #file.write("\n\n")
-                #file.write(json.dumps(setup_results, indent=4))
                 file.write(f"<h2>Conversation</h2>")
                 file.write(f"<pre>{json.dumps(setup_results['conversation_log'], indent=4)}</pre>")
-
-            
-            # for test_result in setup_results["results"]:
-                
-            #     if not test_result['pass']:
-            #         failed_report_txt += json.dumps(test_result)+'\n'
-
-            #     test_count += 1
-            #     if test_result['pass']:
-            #         pass_count += 1
                     
     if failed_report_txt == '':
         failed_report_txt = "No failed tests"
