@@ -7,6 +7,11 @@ VERSION="$(git describe --abbrev=0 --tags || echo "v0.0.0")"
 
 GITHUBREF="$1"
 
+if [[ "$GITHUBREF" == "refs/tags/v"* ]]; then
+    GITHUBREF_ARRAY=(${GITHUBREF//\// })
+    VERSION="${GITHUBREF_ARRAY[2]}"
+fi
+
 #replace . with space so can split into an array
 VERSION_BITS=(${VERSION//./ })
 

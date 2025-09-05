@@ -64,7 +64,8 @@ import ollama
 
 def chatfn(messages):
     resp = ollama.chat(model='deepseek-r1:8b', messages=messages)
-    return resp["message"]
+    # resp object must contain ["message"]["content"]
+    return resp
 
 def resetMemory(context_reset, memory_reset):
     if memory_reset:
