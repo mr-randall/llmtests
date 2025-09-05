@@ -53,7 +53,7 @@
             "summary": "Who originally bought trampoline?",
             "messages": [{
                     "role": "system",
-                    "content": "Answer with one word, don't use punctuation. Before John got a dirt bike he had a trampoline, who did he buy it from?"
+                    "content": "Answer with one word **only**. Before John got a dirt bike he had a trampoline, who did he buy it from?"
                 }],
             "expected_response": "Chris"
         },
@@ -61,7 +61,7 @@
             "summary": "Who did Chris sell his trampoline too?",
             "messages": [{
                     "role": "system",
-                    "content": "Answer with one word, don't use punctuation. Who did Chris sell his trampoline to?"
+                    "content": "Answer with one word **only**. Who did Chris sell his trampoline to?"
                 }],
             "expected_response": "trampoline"
         },
@@ -69,7 +69,7 @@
             "summary": "Who owns a motorbike?",
             "messages": [{
                     "role": "system",
-                    "content": "Answer with one word, don't use punctuation. Who owns a motorbike?"
+                    "content": "Answer with one word **only**. Who owns a motorbike?"
                 }],
             "expected_response": "John"
         },

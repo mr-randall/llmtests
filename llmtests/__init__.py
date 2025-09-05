@@ -1,5 +1,6 @@
 import json
 from os import walk, path
+import os
 from re import sub, DOTALL
 import re
 
@@ -20,8 +21,8 @@ def get_json_files_in_folder(folder_path, recursive=False):
     return test_file_paths
 
 
-def tidy_llm_response(llm_resp):
-    response = llm_resp["content"]
+def tidy_llm_response(llm_resp_text):
+    response = llm_resp_text
     no_think_response = sub(r'<think>(.*?)<\/think>\n\n', '', response, flags=DOTALL)
     return no_think_response
     
@@ -29,6 +30,7 @@ def tidy_llm_response(llm_resp):
 def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
     
     test_results = []
+    conversation_log = []
     
     setup_summary='<No setup summary>'
     if "summary" in setup_conf:
@@ -36,13 +38,20 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
     
     #Provide the LLM with the prior conversation
     for prior_conversation in setup_conf["prior_conversations"]:
-        chat_fn(prior_conversation)
+        conversation_log.extend(prior_conversation)
+        llm_resp_text = chat_fn(prior_conversation)["message"]["content"]
+        llm_resp_obj = {"role" : "assistant", "content": llm_resp_text}
+        conversation_log.append(llm_resp_obj)
         
     
         
     #New context and perform tests
     for test in tests_conf:
-        tidy_resp = tidy_llm_response(chat_fn(test["messages"]))
+        conversation_log.extend(test["messages"])
+        llm_resp_text = chat_fn(test["messages"])["message"]["content"]
+        llm_resp_obj = {"role" : "assistant", "content": llm_resp_text}
+        conversation_log.append(llm_resp_obj)
+        tidy_resp = tidy_llm_response(llm_resp_text)
         
         test_summary='<No test summary>'
         if "summary" in test:
@@ -63,12 +72,14 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
             'pass': test_result
             })
         if reset_fn:
-            reset_fn(context_reset=False, memory_reset=True)
+            reset_fn(context_reset=True, memory_reset=False)
+            conversation_log.append({"role":"Context reset","content":""})
     
     if reset_fn:
         reset_fn(context_reset=False, memory_reset=True)
+        conversation_log.append({"role":"Memory reset","content":""})
                 
-    return {'summary':setup_summary, 'results': test_results}
+    return {'summary':setup_summary, 'results': test_results, "conversation_log": conversation_log}
         
 
 
@@ -134,3 +145,70 @@ def test_results_as_text_report(results_array):
         failed_report_txt = "No failed tests"
     return {'pass_count': pass_count, 'test_count': test_count, 'failed_report': failed_report_txt}
 
+def test_results_as_html_report(results_array, folder_name):
+    pass_count = 0
+    test_count = 0
+    
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name) 
+    
+    file_results_array = []
+    
+    # Ensure the result is always at the file level
+    if 'results' in results_array[0]:
+        if 'results' not in results_array[0]['results'][0]:
+            file_results_array.append({'results': results_array}) #Missing 2nd level results
+        else:
+            file_results_array = results_array #Already formatted correctly
+    else:
+        file_results_array.append({'results': [{'results': results_array}]}) #Missing first level results
+        
+    failed_report_txt = ''
+    
+    test_file_number = 0
+    
+    
+    for file_result in file_results_array:
+        test_file_number += 1
+        test_setup_number = 0
+        for setup_results in file_result["results"]:
+            test_setup_number += 1
+            test_result_number = 0
+            
+            file_name = f"test-{test_file_number}-{test_setup_number}.html"
+            
+            with open(path.join(folder_name, file_name), 'w') as file:
+                file.write(f"<h1>Setup {test_setup_number}</h1>")
+                file.write(f"<h2>Summary</h2> \"{setup_results['summary']}\"")
+                file.write(f"<h2>Results</h2>")
+                file.write(f"<table>")
+                file.write(f"<tr><th>#</th><th>Name</th><th>Expected</th><th>Result</th><th>Pass</th></tr>")
+                
+                for test_result in setup_results["results"]:
+                    test_result_number += 1
+                    file.write(f"<tr><td>{test_result_number}</td><td>{test_result['summary']}</td><td>{test_result['expected']}</td><td>{test_result['result']}</td><td>{test_result['pass']}</td></tr>")
+                    #file.write(f"<h2>Test {test_result_number}: \"{test_result['summary']}\"</h2>\n")
+                    #file.write(f"<h3>Expect: \"{test_result['expected']}\"</h3>")
+                    #file.write(f"<h3>Result: \"{test_result['result']}\"</h3>")
+                    #file.write(f"<h3>Pass: \"{test_result['pass']}\"</h3>")
+                    
+                file.write(f"</table>")
+                
+                #file.write("\n\n")
+                #file.write(json.dumps(setup_results, indent=4))
+                file.write(f"<h2>Conversation</h2>")
+                file.write(f"<pre>{json.dumps(setup_results['conversation_log'], indent=4)}</pre>")
+
+            
+            # for test_result in setup_results["results"]:
+                
+            #     if not test_result['pass']:
+            #         failed_report_txt += json.dumps(test_result)+'\n'
+
+            #     test_count += 1
+            #     if test_result['pass']:
+            #         pass_count += 1
+                    
+    if failed_report_txt == '':
+        failed_report_txt = "No failed tests"
+    return {'pass_count': pass_count, 'test_count': test_count, 'failed_report': failed_report_txt}
