@@ -5,7 +5,7 @@
 #get highest tag number
 VERSION="$(git describe --abbrev=0 --tags || echo "v0.0.0")"
 
-GITHUBREF="%1"
+GITHUBREF="$1"
 
 #replace . with space so can split into an array
 VERSION_BITS=(${VERSION//./ })
