@@ -19,7 +19,7 @@ jobs:
         cd ${{ github.workspace }}
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        ./increment_tag.sh
+        ./increment_tag.sh ${{ github.ref }}
     - name: Set up Python
       uses: actions/setup-python@v5
       with:

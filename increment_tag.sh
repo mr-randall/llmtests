@@ -5,10 +5,13 @@
 #get highest tag number
 VERSION="$(git describe --abbrev=0 --tags || echo "v0.0.0")"
 
+GITHUBREF="%1"
+
 #replace . with space so can split into an array
 VERSION_BITS=(${VERSION//./ })
 
 #get number parts and increase last one by 1
+echo GITHUB_REF $GITHUBREF
 echo GITHUB_RUN_NUMBER $GITHUB_RUN_NUMBER
 echo GITHUB_RUN_ATTEMPT $GITHUB_RUN_ATTEMPT
 VNUM1=${VERSION_BITS[0]}
