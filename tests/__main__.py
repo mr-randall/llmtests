@@ -8,13 +8,13 @@ class TestFramework():
         self.load_first_expected_response()
         
     def first_expected_chat_exactly_fn(self, _messages):
-        return {"message": {"content": f"<think>Hmm I don't know how to think</think>\n\n{self.llm_response}"}}
+        return {"message": {"role":"assistant", "content": f"<think>Hmm I don't know how to think</think>\n\n{self.llm_response}"}}
 
     def first_expected_chat_upper_fn(self, _messages):
-        return {"message":{"content": f"<think>Hmm I don't know how to think</think>\n\n{self.llm_response.upper()}"}}
+        return {"message":{"role":"assistant", "content": f"<think>Hmm I don't know how to think</think>\n\n{self.llm_response.upper()}"}}
     
     def empty_chat_response_fn(self, _messages):
-        return {"message":{"content": f"<think>Hmm I don't know how to think</think>\n\n"}}
+        return {"message":{"role":"assistant", "content": f"<think>Hmm I don't know how to think</think>\n\n"}}
 
     def load_first_expected_response(self):
         filenames = llmtests.get_json_files_in_folder(llmtests.SETTINGS.tests_folder)

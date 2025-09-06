@@ -29,7 +29,6 @@ def tidy_llm_response(llm_resp_text):
     
 
 def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
-    
     test_results = []
     conversation_log = []
     
@@ -40,8 +39,8 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
     #Provide the LLM with the prior conversation
     for prior_conversation in setup_conf["prior_conversations"]:
         conversation_log.extend(prior_conversation)
-        llm_resp_text = chat_fn(prior_conversation)["message"]["content"]
-        llm_resp_obj = {"role" : "assistant", "content": llm_resp_text}
+        llm_resp = chat_fn(prior_conversation)
+        llm_resp_obj = {"role" : llm_resp["message"]["role"], "content": llm_resp["message"]["content"]}
         conversation_log.append(llm_resp_obj)
         
     
@@ -49,8 +48,9 @@ def test_single_setup(chat_fn, reset_fn, setup_conf, tests_conf):
     #New context and perform tests
     for test in tests_conf:
         conversation_log.extend(test["messages"])
-        llm_resp_text = chat_fn(test["messages"])["message"]["content"]
-        llm_resp_obj = {"role" : "assistant", "content": llm_resp_text}
+        llm_resp = chat_fn(test["messages"])
+        llm_resp_text = llm_resp["message"]["content"]
+        llm_resp_obj = {"role" : llm_resp["message"]["role"], "content": llm_resp["message"]["content"]}
         conversation_log.append(llm_resp_obj)
         tidy_resp = tidy_llm_response(llm_resp_text)
         

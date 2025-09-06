@@ -70,7 +70,7 @@
     ], 
     "tests" : [
         {
-            "summary": "Who bought a trampoline?",
+            "summary": "Who bought a trampoline with correction",
             "messages": [{
                     "role": "system",
                     "content": "Answer with one word **only**. Who bought a trampoline?"
@@ -78,7 +78,7 @@
             "expected_response": "Chris"
         },
         {
-            "summary": "What did Chris just buy?",
+            "summary": "What did Chris just buy with correction",
             "messages": [{
                     "role": "system",
                     "content": "Answer with one word **only**. What did Chris just buy?"
@@ -86,7 +86,7 @@
             "expected_response": "trampoline"
         },
         {
-            "summary": "What did John buy?",
+            "summary": "What did John buy with correction",
             "messages": [{
                     "role": "system",
                     "content": "Answer with one word **only**. What did John just buy?"
