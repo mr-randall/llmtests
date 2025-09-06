@@ -1,9 +1,46 @@
 # LLM Tests
 
 ## Summary
-This package aims to make LLM testing easier and repeatable.
+This package aims to make LLM testing easier and repeatable without aiming to provide a premium service.
+
+Other packages like RAGAS are more feature rich but may require more time to setup or more resources to perform evaluations.
+
+By keeping this package simple, it means you should be up and running within minutes, even on lower spec hardware.
 
 The primary intention is for testing LLM memory solutions like RAG, but the functionality can be used for other purposes as well. Including tool testing.
+
+# Get Started
+
+```python
+# Here is a simple inefficient example
+import llmtests
+import ollama
+
+def chatfn(messages):
+    resp = ollama.chat(model='deepseek-r1:8b', messages=messages)
+    # resp object must contain ["message"]["content"]
+    return resp
+
+def resetMemory(context_reset, memory_reset):
+    if memory_reset:
+        # Reset Database. E.g. wipe everything
+        pass
+    if context_reset:
+        pass
+        # Reset context of current conversation
+
+results = llmtests.test_all(chatfn, resetMemory)
+report = llmtests.test_results_as_text_report(results)
+print("Score:",report["pass_count"],"/",report["test_count"])
+
+if report["failed_report"]:
+    print("Failed tests")
+    print(report["failed_report"])
+else:
+    print("No failed tests")
+```
+
+# Test Format
 
 Test files are stored as JSON using the following template.
 
@@ -55,33 +92,4 @@ The following example explains most of the functionality of the template.
         }
     ]
 }
-```
-
-```python
-# Here is a simple inefficient example
-import llmtests
-import ollama
-
-def chatfn(messages):
-    resp = ollama.chat(model='deepseek-r1:8b', messages=messages)
-    # resp object must contain ["message"]["content"]
-    return resp
-
-def resetMemory(context_reset, memory_reset):
-    if memory_reset:
-        # Reset Database. E.g. wipe everything
-        pass
-    if context_reset:
-        pass
-        # Reset context of current conversation
-
-results = llmtests.test_all(chatfn, resetMemory)
-report = llmtests.test_results_as_text_report(results)
-print("Score:",report["pass_count"],"/",report["test_count"])
-
-if report["failed_report"]:
-    print("Failed tests")
-    print(report["failed_report"])
-else:
-    print("No failed tests")
 ```

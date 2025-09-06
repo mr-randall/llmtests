@@ -63,7 +63,7 @@
                     "role": "system",
                     "content": "Answer with one word **only**. Who did Chris sell his trampoline to?"
                 }],
-            "expected_response": "trampoline"
+            "expected_response": "John"
         },
         {
             "summary": "Who owns a motorbike?",
