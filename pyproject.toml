@@ -25,3 +25,4 @@ build-backend = "hatchling.build"
 
 [tool.hatch.version]
 source = "vcs"
+tag-pattern = "^[Vv]?(?:[\w-]+-)?(?P<version>[vV]?\d+(?:\.\d+){0,2}[^\+]*)(?:\+.*)?$" #Ignore V prefix
